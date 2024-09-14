@@ -7,6 +7,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+/*
+ * Copyright (c) 2024.
+ * ajite created UsersRepository.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ */
+
 @Repository
 public interface UsersRepository extends JpaRepository<Users, String> {
 

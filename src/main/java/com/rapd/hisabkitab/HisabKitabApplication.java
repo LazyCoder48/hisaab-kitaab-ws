@@ -7,6 +7,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+/*
+ * Copyright (c) 2024.
+ * ajite created HisabKitabApplication.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ */
+
 @SpringBootApplication
 @EntityScan(basePackages = "com.rapd")
 @ComponentScan(basePackages = "com.rapd")

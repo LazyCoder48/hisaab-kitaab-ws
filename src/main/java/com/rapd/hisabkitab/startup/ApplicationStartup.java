@@ -10,6 +10,12 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+ * Copyright (c) 2024.
+ * ajite created ApplicationStartup.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ */
+
 @Component
 @RequiredArgsConstructor
 @Slf4j

@@ -9,6 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+/*
+ * Copyright (c) 2024.
+ * ajite created AppUserServiceImpl.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 14/09/24, 2:01 pm
+ */
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -17,9 +24,10 @@ public class AppUserServiceImpl implements AppUserService {
     private final UsersRepository usersRepository;
 
     /**
+     * Updates the user information based on the provided request data.
      *
-     * @param appRequestPojo
-     * @return
+     * @param appRequestPojo the request object containing user data to be updated
+     * @return ResponseEntity containing the response data and status of the update operation
      */
     @Override
     public ResponseEntity<AppResponsePojo> updateUser(AppRequestPojo appRequestPojo) {
@@ -39,9 +47,10 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     /**
+     * Logs out the user based on the provided request data.
      *
-     * @param appRequestPojo
-     * @return
+     * @param appRequestPojo the request object containing user information for logout
+     * @return ResponseEntity containing the response data and status of the logout operation
      */
     @Override
     public ResponseEntity<AppResponsePojo> logoutUser(AppRequestPojo appRequestPojo) {

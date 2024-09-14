@@ -10,11 +10,19 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.nio.file.AccessDeniedException;
 import java.security.SignatureException;
+
+/*
+ * Copyright (c) 2024.
+ * ajite created GlobalExceptionHandler.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 13/09/24, 11:44 am
+ */
 
 @RestControllerAdvice
 @Slf4j
@@ -24,6 +32,25 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleSecurityException(Exception ex) {
 
         ProblemDetail errorDetail = switch (ex) {
+
+            case ExpiredJwtException e -> {
+                log.error("Encountered ExpiredJwtException :{}", e.getMessage());
+                ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
+                detail.setProperty("description", e.getMessage());
+                yield detail;
+            }
+            case SessionAuthenticationException e -> {
+                log.error("Encountered SessionAuthenticationException :{}", e.getMessage());
+                ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_ACCEPTABLE, e.getMessage());
+                detail.setProperty("description", e.getMessage());
+                yield detail;
+            }
+            case UsernameNotFoundException e -> {
+                log.error("Encountered UsernameNotFoundException :{}", e.getMessage());
+                ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+                detail.setProperty("description", e.getMessage());
+                yield detail;
+            }
             case MalformedJwtException e -> {
                 log.error("Encountered MalformedJwtException :{}", e.getMessage());
                 ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
@@ -64,18 +91,6 @@ public class GlobalExceptionHandler {
                 log.error("Encountered SignatureException :{}", e.getMessage());
                 ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
                 detail.setProperty("description", "The JWT signature is invalid");
-                yield detail;
-            }
-            case ExpiredJwtException e -> {
-                log.error("Encountered ExpiredJwtException :{}", e.getMessage());
-                ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
-                detail.setProperty("description", "The JWT token has expired");
-                yield detail;
-            }
-            case UsernameNotFoundException e -> {
-                log.error("Encountered UsernameNotFoundException :{}", e.getMessage());
-                ProblemDetail detail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
-                detail.setProperty("description", "The username was not found");
                 yield detail;
             }
             default -> {

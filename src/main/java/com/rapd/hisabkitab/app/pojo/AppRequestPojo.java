@@ -5,6 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/*
+ * Copyright (c) 2024.
+ * ajite created AppRequestPojo.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

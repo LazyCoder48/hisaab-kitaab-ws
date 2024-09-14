@@ -6,8 +6,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.io.Serial;
-import java.io.Serializable;
+/*
+ * Copyright (c) 2024.
+ * ajite created RegisterUserDto.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 14/09/24, 2:00 pm
+ */
 
 /**
  * DTO for {@link Users}
@@ -18,10 +22,10 @@ import java.io.Serializable;
 @Builder
 public class RegisterUserDto {
 
-    private              String username;
-    private              String firstName;
-    private              String lastName;
-    private              String contactNumber;
-    private              String password;
+    private String username;
+    private String firstName;
+    private String lastName;
+    private String contactNumber;
+    private String password;
 
 }

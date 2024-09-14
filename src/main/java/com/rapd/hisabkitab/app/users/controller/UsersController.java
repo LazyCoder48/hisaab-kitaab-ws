@@ -11,6 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/*
+ * Copyright (c) 2024.
+ * ajite created UsersController.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ */
+
 @RequestMapping("/users")
 @RestController
 @Slf4j

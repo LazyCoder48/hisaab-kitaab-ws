@@ -4,7 +4,6 @@ import com.rapd.hisabkitab.app.users.repository.UsersRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,21 +12,27 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+/*
+ * Copyright (c) 2024.
+ * ajite created ApplicationConfiguration.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 11/09/24, 11:56 pm
+ */
 
 @Configuration
 @RequiredArgsConstructor
 @Slf4j
-@ComponentScan(basePackages = "com.rapd")
-public class ApplicationConfiguration {
+public class ApplicationConfiguration implements WebMvcConfigurer {
 
     private final UsersRepository usersRepository;
 
 
     @Bean
     UserDetailsService userDetailsService() {
-        return username -> usersRepository.findById(username).orElseThrow(
-            () -> new UsernameNotFoundException("User " + username + " not found")
-        );
+        return username -> usersRepository.findById(username).orElseThrow(() -> new UsernameNotFoundException(
+            "User " + username + " not found"));
     }
 
     @Bean

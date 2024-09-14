@@ -16,18 +16,23 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
+
+/*
+ * Copyright (c) 2024.
+ * ajite created JwtAuthFilterConfig.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 14/09/24, 2:02 pm
+ */
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class JwtAuthFilterConfig extends OncePerRequestFilter {
 
-    private final HandlerExceptionResolver handlerExceptionResolver;
-    private final JwtService               jwtService;
-    private final UserDetailsService       userDetailsService;
+    private final JwtService         jwtService;
+    private final UserDetailsService userDetailsService;
 
 
     /**
@@ -42,36 +47,34 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
      */
     @Override
     protected void doFilterInternal(
-        HttpServletRequest request, @NonNull HttpServletResponse response,
-        @NonNull FilterChain filterChain
-    )
-    throws ServletException, IOException {
+        @NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
         final String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
         } else {
-            try {
-                final String   jwt            = authorizationHeader.substring(7);
-                final String   userEmail      = jwtService.extractUsername(jwt);
-                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-                if (null != userEmail && authentication == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+            //            try {
+            final String   jwt            = authorizationHeader.substring(7);
+            final String   userEmail      = jwtService.extractUsername(jwt);
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (null != userEmail && authentication == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-                    if (jwtService.isTokenValid(jwt, userDetails)) {
-                        UsernamePasswordAuthenticationToken authToken
-                            = new UsernamePasswordAuthenticationToken(userDetails,
-                                                                      null,
-                                                                      userDetails.getAuthorities());
-                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
-                    }
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
-                filterChain.doFilter(request, response);
-            } catch (Exception e) {
-                log.error("exception {}", e.getMessage(), e);
-                handlerExceptionResolver.resolveException(request, response, null, e);
             }
+            filterChain.doFilter(request, response);
+            //            } catch (Exception e) {
+            //                log.error("exception {}", e.getMessage(), e);
+            //                handlerExceptionResolver.resolveException(request, response, null, e);
+            //            }
         }
     }
 

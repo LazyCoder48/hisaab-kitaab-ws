@@ -1,5 +1,6 @@
 package com.rapd.hisabkitab.service;
 
+import com.rapd.hisabkitab.app.users.pojo.UsersPojo;
 import com.rapd.hisabkitab.startup.ApplicationStartup;
 import com.rapd.hisabkitab.utils.PropertiesMapper;
 import io.jsonwebtoken.Claims;
@@ -8,6 +9,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +19,16 @@ import java.util.Date;
 import java.util.Map;
 import java.util.function.Function;
 
+/*
+ * Copyright (c) 2024.
+ * ajite created JwtService.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 11/09/24, 11:46 pm
+ */
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class JwtService {
 
     private final ApplicationStartup applicationStartup;
@@ -33,26 +44,34 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
+        UsersPojo usersPojo = new UsersPojo();
+        BeanUtils.copyProperties(userDetails, usersPojo);
+        log.info("usersPojo {}", usersPojo);
 
-        return generateToken(propertiesMapper.generateMapFromObject(userDetails), userDetails);
+        return generateTokenWithUserDetails(propertiesMapper.generateMapFromObject(usersPojo), userDetails);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
-        return buildToken(extraClaims, userDetails,
-                          Long.valueOf(applicationStartup.getEnvironmentVariable("jwt_expiration_time"))
-        );
+    public String generateTokenWithUserDetails(Map<String, Object> extraClaims, UserDetails userDetails) {
+        return buildToken(extraClaims,
+                          userDetails,
+                          Long.valueOf(applicationStartup.getEnvironmentVariable("jwt_expiration_time")));
     }
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long jwtExpirationTime) {
-        return Jwts.builder()
-                   .setClaims(extraClaims)
-                   .setSubject(userDetails.getUsername())
-                   .setId(userDetails.getUsername())
-                   //                   .setPayload(userDetails.toString())
-                   .setIssuedAt(Date.from(java.time.Instant.now()))
-                   .setExpiration(Date.from(java.time.Instant.now().plusMillis(jwtExpirationTime)))
-                   .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                   .compact();
+
+        Date now        = new Date(System.currentTimeMillis());
+        Date expiration = Date.from(java.time.Instant.now().plusMillis(jwtExpirationTime));
+        log.info("expiration {}", expiration);
+        extraClaims.put("expiration", expiration);
+        return Jwts
+            .builder()
+            .setClaims(extraClaims)
+            .setSubject(userDetails.getUsername())
+            .setId(userDetails.getUsername())
+            .setIssuedAt(now)
+            .setExpiration(expiration)
+            .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+            .compact();
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
@@ -69,16 +88,11 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-            .parserBuilder()
-            .setSigningKey(getSignInKey())
-            .build()
-            .parseClaimsJws(token)
-            .getBody();
+        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(applicationStartup.getEnvironmentVariable("jwt_secret"));
+        byte[] keyBytes = Decoders.BASE64URL.decode(applicationStartup.getEnvironmentVariable("jwt_secret"));
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }

@@ -7,7 +7,13 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.OffsetDateTime;
+import java.util.Date;
+
+/*
+ * Copyright (c) 2024.
+ * ajite created UsersPojo.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ */
 
 /**
  * DTO for {@link com.rapd.hisabkitab.app.users.entity.Users}
@@ -19,16 +25,16 @@ import java.time.OffsetDateTime;
 public class UsersPojo implements Serializable {
 
     @Serial
-    private static final long           serialVersionUID = 4491708442151973759L;
-    private              String         username;
-    private              OffsetDateTime createdAt;
-    private              OffsetDateTime updatedAt;
-    private              String         firstName;
-    private              String         lastName;
-    private              String         contactNumber;
-    private              String         city;
-    private              String         state;
-    private              String         country;
-    private              String         zipCode;
+    private static final long   serialVersionUID = 4491708442151973759L;
+    private              String username;
+    private              String firstName;
+    private              String lastName;
+    private              String contactNumber;
+    private              String city;
+    private              String state;
+    private              String country;
+    private              String zipCode;
+    private              Date   expiration;
+
 
 }

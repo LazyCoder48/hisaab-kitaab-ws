@@ -24,9 +24,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Optional;
+
+/*
+ * Copyright (c) 2024.
+ * ajite created UsersServiceImpl.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 11/09/24, 10:28 pm
+ */
 
 @Service
 @RequiredArgsConstructor
@@ -53,10 +60,10 @@ public class UsersServiceImpl implements UsersService {
     @Override
     public ResponseEntity<AppResponsePojo> signup(AppRequestPojo appRequestPojo) {
         //        RegisterUserDto registerDto = new RegisterUserDto();
-
-        RegisterUserDto registerDto =
-            propertiesMapper.mapSourceToTarget((LinkedHashMap<String, Object>) appRequestPojo.getData(),
-                                               RegisterUserDto.class);
+        @SuppressWarnings("unchecked")
+        RegisterUserDto registerDto
+            = propertiesMapper.mapSourceToTarget((LinkedHashMap<String, Object>) appRequestPojo.getData(),
+                                                 RegisterUserDto.class);
         Optional<Users> existingUserOptional = usersRepository.findByUsername(registerDto.getUsername());
         if (existingUserOptional.isPresent()) {
             log.warn("user already exists with username {}", registerDto.getUsername());
@@ -65,7 +72,7 @@ public class UsersServiceImpl implements UsersService {
 
         Users user = Users.builder().username(registerDto.getUsername()).firstName(registerDto.getFirstName()).lastName(
             registerDto.getLastName()).contactNumber(registerDto.getContactNumber()).password(passwordEncoder.encode(
-            registerDto.getPassword())).createdAt(OffsetDateTime.now()).build();
+            registerDto.getPassword())).createdAt(new Date()).build();
         try {
             Users savedUser = usersRepository.save(user);
             log.info("Saved user {} successfully @{}", savedUser.getUsername(), savedUser.getCreatedAt());
@@ -89,6 +96,7 @@ public class UsersServiceImpl implements UsersService {
     public ResponseEntity<AppResponsePojo> authenticate(AppRequestPojo appRequestPojo) {
         LoginUserDto loginUserDto = new LoginUserDto();
         if (appRequestPojo.getData() instanceof LinkedHashMap) {
+            @SuppressWarnings("unchecked")
             LinkedHashMap<String, Object> map = (LinkedHashMap<String, Object>) appRequestPojo.getData();
             loginUserDto.setUsername(map.get("username").toString());
             loginUserDto.setPassword(map.get("password").toString());
@@ -100,27 +108,29 @@ public class UsersServiceImpl implements UsersService {
 
         log.info("Authenticating user {}", loginUserDto.getUsername());
         try {
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDto.getUsername(),
-                                                                                       loginUserDto.getPassword()));
-            log.info("User {} authenticated successfully", loginUserDto.getUsername());
             Optional<Users> userOptional = usersRepository.findByUsername(loginUserDto.getUsername());
-            if (userOptional.isPresent()) {
-                Users           authenticatedUser = userOptional.get();
-                AppResponsePojo appResponsePojo   = new AppResponsePojo();
-                UsersPojo       usersPojo         = new UsersPojo();
-                BeanUtils.copyProperties(authenticatedUser, usersPojo);
-                appResponsePojo.setData(usersPojo);
-                String jwt = jwtService.generateToken(authenticatedUser);
-                appResponsePojo.setJwt(jwt);
-                appResponsePojo.setHttpResponseCode(HttpStatus.OK.value());
-                appResponsePojo.setHttpResponseBody("Authentication successful");
-                return ResponseEntity.ok(appResponsePojo);
-            } else {
+            if (userOptional.isEmpty()) {
                 throw new UsernameNotFoundException(
                     "A user with username " + loginUserDto.getUsername() + " not found");
             }
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginUserDto.getUsername(),
+                                                                                       loginUserDto.getPassword()));
+            log.info("User {} authenticated successfully", loginUserDto.getUsername());
+
+            Users           authenticatedUser = userOptional.get();
+            AppResponsePojo appResponsePojo   = new AppResponsePojo();
+            UsersPojo       usersPojo         = new UsersPojo();
+            BeanUtils.copyProperties(authenticatedUser, usersPojo);
+            appResponsePojo.setData(usersPojo);
+            String jwt = jwtService.generateToken(authenticatedUser);
+            appResponsePojo.setJwt(jwt);
+            appResponsePojo.setHttpResponseCode(HttpStatus.OK.value());
+            appResponsePojo.setHttpResponseBody("Authentication successful");
+            return ResponseEntity.ok(appResponsePojo);
         } catch (BadCredentialsException e) {
             throw new BadCredentialsException("Username and password do not match");
+        } catch (UsernameNotFoundException e) {
+            throw new UsernameNotFoundException(e.getMessage(), e);
         }
     }
 
@@ -145,7 +155,7 @@ public class UsersServiceImpl implements UsersService {
                 log.info("user is available");
                 Users user = new Users();
                 BeanUtils.copyProperties(appRequestPojo.getData(), user);
-                user.setUpdatedAt(OffsetDateTime.now());
+                user.setUpdatedAt(new Date());
                 Users updatedUser = usersRepository.save(user);
                 log.info("Updated user {} successfully @{}", updatedUser.getUsername(), updatedUser.getUpdatedAt());
                 AppResponsePojo appResponsePojo = new AppResponsePojo();

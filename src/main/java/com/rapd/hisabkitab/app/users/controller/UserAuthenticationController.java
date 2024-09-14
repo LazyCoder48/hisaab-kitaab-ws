@@ -2,8 +2,6 @@ package com.rapd.hisabkitab.app.users.controller;
 
 import com.rapd.hisabkitab.app.pojo.AppRequestPojo;
 import com.rapd.hisabkitab.app.pojo.AppResponsePojo;
-import com.rapd.hisabkitab.app.users.dto.LoginUserDto;
-import com.rapd.hisabkitab.app.users.dto.RegisterUserDto;
 import com.rapd.hisabkitab.app.users.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+/*
+ * Copyright (c) 2024.
+ * ajite created UserAuthenticationController.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 14/09/24, 2:00 pm
+ */
 
 @RestController
 @RequiredArgsConstructor

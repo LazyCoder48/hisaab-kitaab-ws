@@ -9,6 +9,12 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/*
+ * Copyright (c) 2024.
+ * ajite created PropertiesMapper.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ */
+
 @Component
 @Slf4j
 public class PropertiesMapper {

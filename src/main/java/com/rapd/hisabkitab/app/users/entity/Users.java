@@ -17,9 +17,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.OffsetDateTime;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+
+/*
+ * Copyright (c) 2024.
+ * ajite created Users.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 14/09/24, 2:01 pm
+ */
 
 /**
  * Entity that represents a user in the application.
@@ -56,10 +63,10 @@ public class Users implements Serializable, UserDetails {
 
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false, updatable = false)
-    private OffsetDateTime createdAt;
+    private Date createdAt;
 
     @Column(name = "updated_at")
-    private OffsetDateTime updatedAt;
+    private Date updatedAt;
 
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;

@@ -13,6 +13,12 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/*
+ * Copyright (c) 2024.
+ * ajite created SecurityConfiguration.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ */
+
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor

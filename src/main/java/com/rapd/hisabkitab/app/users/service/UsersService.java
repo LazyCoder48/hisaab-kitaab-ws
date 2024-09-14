@@ -2,9 +2,14 @@ package com.rapd.hisabkitab.app.users.service;
 
 import com.rapd.hisabkitab.app.pojo.AppRequestPojo;
 import com.rapd.hisabkitab.app.pojo.AppResponsePojo;
-import com.rapd.hisabkitab.app.users.dto.LoginUserDto;
-import com.rapd.hisabkitab.app.users.dto.RegisterUserDto;
 import org.springframework.http.ResponseEntity;
+
+/*
+ * Copyright (c) 2024.
+ * ajite created UsersService.java
+ * Project: hisab-kitab-ws | Module: hisab-kitab-ws
+ * Last updated on 14/09/24, 2:00 pm
+ */
 
 /**
  * Provides user-related services such as registration, authentication, and updating user details.
