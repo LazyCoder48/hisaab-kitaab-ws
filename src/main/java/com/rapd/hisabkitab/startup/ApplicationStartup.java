@@ -1,6 +1,7 @@
 package com.rapd.hisabkitab.startup;
 
 import jakarta.annotation.PostConstruct;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,7 @@ import java.util.Properties;
  * Copyright (c) 2024.
  * ajite created ApplicationStartup.java
  * Project: hisab-kitab-ws | Module: hisab-kitab-ws
- * Last updated on 30/09/24, 7:50 am
+ * Last updated on 30/9/2024 9:11:57
  */
 
 @Component
@@ -27,6 +28,7 @@ import java.util.Properties;
 @Slf4j
 public class ApplicationStartup {
 
+    @Getter
     private final ConfigurableEnvironment environment;
 
     @Setter

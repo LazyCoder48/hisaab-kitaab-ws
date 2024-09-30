@@ -26,7 +26,7 @@ import java.util.List;
  * Copyright (c) 2024.
  * ajite created Users.java
  * Project: hisab-kitab-ws | Module: hisab-kitab-ws
- * Last updated on 30/09/24, 8:35 am
+ * Last updated on 30/9/2024 9:11:57
  */
 
 /**
@@ -56,35 +56,35 @@ import java.util.List;
 public class Users implements Serializable, UserDetails {
 
     @Serial
-    private static final long serialVersionUID = -2107953066338471450L;
+    private static final long                   serialVersionUID = -2107953066338471450L;
     @Transient
-    List<GrantedAuthority> authorities;
+    private              List<GrantedAuthority> authorities;
     @Id
     @Column(name = "username", nullable = false, length = 300, unique = true)
-    private String username;
+    private              String                 username;
     @ColumnDefault("now()")
     @Column(name = "created_at", nullable = false, updatable = false)
-    private Date   createdAt;
+    private              Date                   createdAt;
     @Column(name = "updated_at")
-    private Date   updatedAt;
+    private              Date                   updatedAt;
     @Column(name = "first_name", nullable = false, length = 50)
-    private String firstName;
+    private              String                 firstName;
     @Column(name = "last_name", nullable = false, length = 50)
-    private String lastName;
+    private              String                 lastName;
     @Column(name = "contact_number", nullable = false, length = 10)
-    private String contactNumber;
+    private              String                 contactNumber;
     @Column(name = "city", length = 100)
-    private String city;
+    private              String                 city;
     @Column(name = "state", length = 100)
-    private String state;
+    private              String                 state;
     @Column(name = "country", length = 100)
-    private String country;
+    private              String                 country;
     @Column(name = "zip_code", length = 10)
-    private String zipCode;
+    private              String                 zipCode;
     @Column(name = "password")
-    private String password;
+    private              String                 password;
     @Column(name = "jwt_token", columnDefinition = "bytea[]")
-    private byte[] jwtToken;
+    private              byte[]                 jwtToken;
 
     /**
      * Retrieves the authorities granted to the user.
