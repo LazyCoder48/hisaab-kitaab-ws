@@ -6,6 +6,7 @@ import com.rapd.hisabkitab.app.users.service.UsersService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * Copyright (c) 2024.
  * ajite created UserAuthenticationController.java
  * Project: hisab-kitab-ws | Module: hisab-kitab-ws
- * Last updated on 14/09/24, 2:00 pm
+ * Last updated on 30/09/24, 8:28 am
  */
 
 @RestController
@@ -49,6 +50,12 @@ public class UserAuthenticationController {
     public ResponseEntity<AppResponsePojo> login(@RequestBody AppRequestPojo appRequestPojo) {
         log.info("login for {}", appRequestPojo);
         return usersService.authenticate(appRequestPojo);
+    }
+
+    @PatchMapping("/logout")
+    public ResponseEntity<AppResponsePojo> logout(@RequestBody AppRequestPojo appRequestPojo) {
+        log.info("logout for {}", appRequestPojo);
+        return usersService.logout(appRequestPojo);
     }
 
 }

@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Optional;
@@ -32,7 +33,7 @@ import java.util.Optional;
  * Copyright (c) 2024.
  * ajite created UsersServiceImpl.java
  * Project: hisab-kitab-ws | Module: hisab-kitab-ws
- * Last updated on 11/09/24, 10:28 pm
+ * Last updated on 30/09/24, 8:45 am
  */
 
 @Service
@@ -123,6 +124,7 @@ public class UsersServiceImpl implements UsersService {
             BeanUtils.copyProperties(authenticatedUser, usersPojo);
             appResponsePojo.setData(usersPojo);
             String jwt = jwtService.generateToken(authenticatedUser);
+            authenticatedUser.setJwtToken(jwt.getBytes(StandardCharsets.UTF_16));
             appResponsePojo.setJwt(jwt);
             appResponsePojo.setHttpResponseCode(HttpStatus.OK.value());
             appResponsePojo.setHttpResponseBody("Authentication successful");
@@ -169,5 +171,27 @@ public class UsersServiceImpl implements UsersService {
         } else {
             throw new SessionAuthenticationException("Session expired, Please login again");
         }
+    }
+
+    @Override
+    public ResponseEntity<AppResponsePojo> logout(AppRequestPojo appRequestPojo) {
+        Users user = new Users();
+        BeanUtils.copyProperties(appRequestPojo.getData(), user);
+        if (jwtService.isTokenValid(appRequestPojo.getJwt(), user.getUsername())) {
+            user = usersRepository.findByUsername(user.getUsername()).orElse(null);
+            if (null != user) {
+                user.setJwtToken(null);
+                usersRepository.save(user);
+                return ResponseEntity.ok(new AppResponsePojo());
+            }
+            return ResponseEntity.ofNullable(AppResponsePojo.builder().data("User not found").httpResponseBody(
+                "User not found").httpResponseCode(HttpStatus.NO_CONTENT.value()).build());
+        }
+        return ResponseEntity.badRequest().body(AppResponsePojo
+                                                    .builder()
+                                                    .httpResponseCode(HttpStatus.UNAUTHORIZED.value())
+                                                    .httpResponseBody(("Invalid Authentication Token, please retry " +
+                                                                       "logging in"))
+                                                    .build());
     }
 }

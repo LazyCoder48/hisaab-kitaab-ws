@@ -23,7 +23,7 @@ import java.util.function.Function;
  * Copyright (c) 2024.
  * ajite created JwtService.java
  * Project: hisab-kitab-ws | Module: hisab-kitab-ws
- * Last updated on 11/09/24, 11:46 pm
+ * Last updated on 30/09/24, 8:38 am
  */
 
 @Service
@@ -44,9 +44,10 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
+
         UsersPojo usersPojo = new UsersPojo();
         BeanUtils.copyProperties(userDetails, usersPojo);
-        log.info("usersPojo {}", usersPojo);
+        log.info("Generating token for usersPojo: {}", usersPojo); // Added logging
 
         return generateTokenWithUserDetails(propertiesMapper.generateMapFromObject(usersPojo), userDetails);
     }
@@ -58,11 +59,10 @@ public class JwtService {
     }
 
     private String buildToken(Map<String, Object> extraClaims, UserDetails userDetails, Long jwtExpirationTime) {
-
         Date now        = new Date(System.currentTimeMillis());
-        Date expiration = Date.from(java.time.Instant.now().plusMillis(jwtExpirationTime));
-        log.info("expiration {}", expiration);
+        Date expiration = new Date(now.getTime() + jwtExpirationTime * 1000 * 60);
         extraClaims.put("expiration", expiration);
+
         return Jwts
             .builder()
             .setClaims(extraClaims)
@@ -74,13 +74,13 @@ public class JwtService {
             .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
-        final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername())) && isTokenExpired(token);
+    public boolean isTokenValid(String token, String username) {
+        final String jwtUsername = extractUsername(token);
+        return (jwtUsername.equals(username)) && !isTokenExpired(token);
     }
 
     public boolean isTokenExpired(String token) {
-        return !extractExpiration(token).before(new Date());
+        return extractExpiration(token).before(new Date());
     }
 
     private Date extractExpiration(String token) {
@@ -88,11 +88,27 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parserBuilder().setSigningKey(getSignInKey()).build().parseClaimsJws(token).getBody();
+        try {
+            return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody(); // Wrapped in try-catch for better error handling
+        } catch (Exception e) {
+            log.error("Error while extracting claims: ", e);
+            throw new RuntimeException("Invalid JWT token");  // Better exception handling
+        }
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64URL.decode(applicationStartup.getEnvironmentVariable("jwt_secret"));
-        return Keys.hmacShaKeyFor(keyBytes);
+        try {
+            String jwtSecret = applicationStartup.getEnvironmentVariable("jwt_secret");
+            byte[] keyBytes  = Decoders.BASE64URL.decode(jwtSecret);
+            return Keys.hmacShaKeyFor(keyBytes); // Proper error handling
+        } catch (Exception e) {
+            log.error("Error while decoding secret: ", e);
+            throw new RuntimeException("Failed to decode JWT secret");  // Better error handling
+        }
     }
 }

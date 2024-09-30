@@ -23,7 +23,7 @@ import java.io.IOException;
  * Copyright (c) 2024.
  * ajite created JwtAuthFilterConfig.java
  * Project: hisab-kitab-ws | Module: hisab-kitab-ws
- * Last updated on 14/09/24, 2:02 pm
+ * Last updated on 30/09/24, 8:38 am
  */
 
 @Component
@@ -61,11 +61,10 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
             if (null != userEmail && authentication == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
 
-                if (jwtService.isTokenValid(jwt, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities());
+                if (jwtService.isTokenValid(jwt, userDetails.getUsername())) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
+                                                                                                            null,
+                                                                                                            userDetails.getAuthorities());
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }

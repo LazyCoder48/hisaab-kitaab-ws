@@ -8,11 +8,12 @@ import org.springframework.http.ResponseEntity;
  * Copyright (c) 2024.
  * ajite created UsersService.java
  * Project: hisab-kitab-ws | Module: hisab-kitab-ws
- * Last updated on 14/09/24, 2:00 pm
+ * Last updated on 30/09/24, 8:28 am
  */
 
 /**
- * Provides user-related services such as registration, authentication, and updating user details.
+ * UsersService interface provides methods for user-related operations
+ * such as signup, authentication, updating user details, and logout.
  */
 public interface UsersService {
 
@@ -39,4 +40,12 @@ public interface UsersService {
      * @return a response entity containing the result of the update operation and relevant details
      */
     ResponseEntity<AppResponsePojo> updateUserDetails(AppRequestPojo appRequestPojo);
+
+    /**
+     * Logs out a user based on the provided request details.
+     *
+     * @param appRequestPojo the request containing the logout details
+     * @return a response entity containing the result of the logout operation and relevant details
+     */
+    ResponseEntity<AppResponsePojo> logout(AppRequestPojo appRequestPojo);
 }
