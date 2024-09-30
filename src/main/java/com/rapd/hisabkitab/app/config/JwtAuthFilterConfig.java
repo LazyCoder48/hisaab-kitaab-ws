@@ -23,7 +23,7 @@ import java.io.IOException;
  * Copyright (c) 2024.
  * ajite created JwtAuthFilterConfig.java
  * Project: hisab-kitab-ws | Module: hisab-kitab-ws
- * Last updated on 30/09/24, 8:38 am
+ * Last updated on 30/09/24, 8:50 am
  */
 
 @Component
@@ -70,10 +70,6 @@ public class JwtAuthFilterConfig extends OncePerRequestFilter {
                 }
             }
             filterChain.doFilter(request, response);
-            //            } catch (Exception e) {
-            //                log.error("exception {}", e.getMessage(), e);
-            //                handlerExceptionResolver.resolveException(request, response, null, e);
-            //            }
         }
     }
 
