@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2024.
+  ~ Copyright (c) 2024-2025.
   ~ ajite created pom.xml
   ~ Project: hisab-kitab-ws | Module: hisab-kitab-ws
+  ~ Last updated on 28/3/2025 11:13:37
   -->
 
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
@@ -14,11 +15,11 @@
         <version>3.3.3</version>
         <relativePath/>
     </parent>
-    <groupId>com.rapd.hisabkitab</groupId>
-    <artifactId>hisab-kitab-ws</artifactId>
+    <groupId>com.rapd.hisaabkitaab</groupId>
+    <artifactId>hisaab-kitaab-ws</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
-    <name>hisab-kitab-ws</name>
+    <name>hisaab-kitaab-ws</name>
     <description>backend for finance management app</description>
     <url/>
     <licenses>
